@@ -1,0 +1,1 @@
+var config = require(__dirname + '/../config/config.js')[env]
