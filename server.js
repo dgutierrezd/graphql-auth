@@ -1,17 +1,28 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const { graphqlExpress } = require('apollo-server-express');
-const schema = require('./graphql/schema');
+const cors = require('cors');
+const { ApolloServer } = require('apollo-server-express');
+const typeDefs = require('./graphql/schema');
+const resolvers = require('./graphql/resolvers');
+const models = require('./models');
+const jwt = require('express-jwt')
+require('dotenv').config()
 
 const app = express();
 const PORT = 4000;
 
-// GraphQL endpoint
-app.use('/graphql', bodyParser.json(), 
-    graphqlExpress({ 
-        schema
-    })
-)
+const auth = jwt({
+    secret: process.env.JWT_SECRET,
+    credentialsRequired: false
+})
+
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: { models }
+})
+
+app.use(cors(), auth);
+server.applyMiddleware({ app });
 
 app.listen(PORT, () => {
     console.log(`Server running on ${PORT}/graphql`);

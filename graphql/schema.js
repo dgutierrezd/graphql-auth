@@ -1,7 +1,6 @@
-const { makeExecutableSchema } = require('graphql-tools');
-const resolvers = require('./resolvers');
+const { gql } = require('apollo-server-express');
 
-const typeDefs = `
+module.exports = gql`
     type User {
         id: Int!
         username: String!
@@ -10,13 +9,11 @@ const typeDefs = `
     }
 
     type Query {
-        lookMe: User
+        lookUsers: [User]
     }
 
     type Mutation {
-        signup (username: String!, email: String!, password: String!): String
+        signup (username: String!, email: String!, password: String!): Int
         login (email: String!, password: String!): String
     }
 `;
-
-module.exports = makeExecutableSchema({ typeDefs, resolvers });

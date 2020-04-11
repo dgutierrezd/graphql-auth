@@ -4,12 +4,12 @@ const jsonwebtoken = require('jsonwebtoken');
 
 const resolvers = {
     Query: {
-        async lookMe(_, args, { user }) {
-            if(!user) {
-                throw new Error(`You're not authenticated`);
-            }
+        async lookUsers(_, args, { models }) {
+            // if(!user) {
+            //     throw new Error(`You're not authenticated`);
+            // }
 
-            return await User.findById(user.id);
+            return await models.User.findAll();
         }
     },
 
@@ -21,10 +21,7 @@ const resolvers = {
                 password: await bcrypt.hash(password, 10)
             })
 
-            return jsonwebtoken.sign(
-                { id: user.id, email: user.email },
-                process.env.JWT_SECRET
-            )
+            return true;
         },
 
         async login(_, { email, password }) {
